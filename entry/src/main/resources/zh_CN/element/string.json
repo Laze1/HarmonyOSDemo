@@ -11,6 +11,10 @@
     {
       "name": "EntryAbility_label",
       "value": "鸿蒙蓝牙"
+    },
+    {
+      "name": "Bluetooth_reason",
+      "value": "用于扫描连接蓝牙设备"
     }
   ]
 }

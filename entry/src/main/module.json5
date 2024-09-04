@@ -3,7 +3,7 @@
     "name": "entry",
     "type": "entry",
     "description": "$string:module_desc",
-    "mainElement": "EntryAbility",
+    "mainElement": "NavigationAbility",
     "deviceTypes": [
       "phone",
       "tablet",
@@ -17,6 +17,17 @@
         "name": "EntryAbility",
         "srcEntry": "./ets/entryability/EntryAbility.ets",
         "description": "$string:EntryAbility_desc",
+        "icon": "$media:layered_image",
+        "label": "$string:EntryAbility_label",
+        "startWindowIcon": "$media:startIcon",
+        "startWindowBackground": "$color:start_window_background",
+        "exported": true,
+        "launchType": "standard",
+      },
+      {
+        "name": "NavigationAbility",
+        "srcEntry": "./ets/entryability/NavigationAbility.ets",
+        "description": "导航页面",
         "icon": "$media:layered_image",
         "label": "$string:EntryAbility_label",
         "startWindowIcon": "$media:startIcon",
@@ -46,7 +57,17 @@
             "name": "ohos.extension.backup",
             "resource": "$profile:backup_config"
           }
-        ],
+        ]
+      }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO"
+      },
+      {
+        "name": "ohos.permission.ACCESS_BLUETOOTH",
+        "reason": "$string:Bluetooth_reason",
+        "usedScene": {}
       }
     ]
   }
