@@ -3,22 +3,29 @@ import { SymbolGlyphModifier } from '@kit.ArkUI';
 @Entry
 @Component
 struct NavigationExample {
+  private menus:NavigationMenuItem[] = [
+    {value: "扫码", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.line_viewfinder')), action: ()=> {}},
+    {value: "喜欢", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.heart')), action: ()=> {}},
+    {value: "收藏", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.star')), action: ()=> {}},
+    {value: "日历", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.calendar')), action: ()=> {}},
+    {value: "待办", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.checkmark_square')), action: ()=> {}}
+  ]
   private TooTmp: ToolbarItem[] = [
-   {'value': "navigation", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.house')), 'action': ()=> {}},
+   {'value': "navigation", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.navigation')), 'action': ()=> {}},
    {'value': "mine", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.person')), 'action': ()=> {}},
-   {'value': "setting", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.more')), 'action': ()=> {}},
+   {'value': "setting", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.gearshape')), 'action': ()=> {}},
   ];
   @Provide('pageInfos') pageInfos: NavPathStack = new NavPathStack()
-  private arr: number[] = [1, 2, 3];
+  private arr: string[] = ['pageOneTmp', 'pageTwoTmp', 'DialogPage'];
 
   @Builder
   PageMap(name: string) {
-    if (name === "NavDestinationTitle1") {
+    if (name === this.arr[0]) {
       pageOneTmp()
-    } else if (name === "NavDestinationTitle2") {
+    } else if (name === this.arr[1]) {
       pageTwoTmp()
-    } else if (name === "NavDestinationTitle3") {
-      pageThreeTmp()
+    } else if (name === this.arr[2]) {
+      DialogPage()
     }
   }
 
@@ -28,40 +35,35 @@ struct NavigationExample {
         TextInput({ placeholder: 'search...' })
           .width("90%")
           .height(40)
-          .backgroundColor('#FFFFFF')
+          .backgroundColor($r('sys.color.comp_background_list_card'))
 
         List({ space: 12 }) {
           ForEach(this.arr, (item:string) => {
             ListItem() {
-              Text("NavRouter" + item)
+              Text(item)
                 .width("100%")
                 .height(72)
-                .backgroundColor('#FFFFFF')
+                .backgroundColor($r('sys.color.comp_background_list_card'))
                 .borderRadius(24)
                 .fontSize(16)
                 .fontWeight(500)
                 .textAlign(TextAlign.Center)
                 .onClick(()=>{
-                  this.pageInfos.pushPath({ name: "NavDestinationTitle" + item})
+                  this.pageInfos.pushPath({ name: item})
                 })
             }
           }, (item:string):string => item)
         }
         .width("90%")
+        .height('100%')
         .margin({ top: 12 })
       }
       .title("导航主页")
       .titleMode(NavigationTitleMode.Full)
       .mode(NavigationMode.Auto)
       .navDestination(this.PageMap)
-      .menus([
-        {value: "", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.more')), action: ()=> {}},
-        {value: "", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.more')), action: ()=> {}},
-        {value: "", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.more')), action: ()=> {}},
-        {value: "", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.more')), action: ()=> {}},
-        {value: "", 'symbolIcon': new SymbolGlyphModifier($r('sys.symbol.more')), action: ()=> {}}
-      ])
-      .toolbarConfiguration([this.TooTmp[0], this.TooTmp[1], this.TooTmp[2]])
+      .menus(this.menus)
+      .toolbarConfiguration(this.TooTmp)
     }
     .height('100%')
     .width('100%')
@@ -105,20 +107,31 @@ export struct pageTwoTmp {
   }
 }
 
-// PageThree.ets
+
 @Component
-export struct pageThreeTmp {
-  @Consume('pageInfos') pageInfos: NavPathStack;
+export struct DialogPage {
+  @Consume('pageInfos') pageStack: NavPathStack;
+
   build() {
     NavDestination() {
-      Column() {
-        Text("NavDestinationContent3")
-      }.width('100%').height('100%')
-    }.title("NavDestinationTitle3")
-    .onBackPressed(() => {
-      const popDestinationInfo = this.pageInfos.pop() // 弹出路由栈栈顶元素
-      console.log('pop' + '返回值' + JSON.stringify(popDestinationInfo))
-      return true
-    })
+      Stack({ alignContent: Alignment.Center }) {
+        Column() {
+          Text("Dialog NavDestination")
+            .fontSize(20)
+            .margin({ bottom: 100 })
+          Button("Close").onClick(() => {
+            this.pageStack.pop()
+          }).width('30%')
+        }
+        .justifyContent(FlexAlign.Center)
+        .backgroundColor(Color.White)
+        .borderRadius(10)
+        .height('30%')
+        .width('80%')
+      }.height("100%").width('100%')
+    }
+    .backgroundColor('rgba(0,0,0,0.5)')
+    .hideTitleBar(true)
+    .mode(NavDestinationMode.DIALOG)
   }
 }
