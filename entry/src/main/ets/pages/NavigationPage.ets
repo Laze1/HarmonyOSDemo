@@ -1,4 +1,9 @@
 import { SymbolGlyphModifier } from '@kit.ArkUI';
+import { DialogPage, pageOneTmp } from './tab/pageTmp';
+import { TabMine } from './tab/TabMine';
+import { TabNavigation } from './tab/TabNavigation';
+import { TabSetting } from './tab/TabSetting';
+import { TodoPage } from './todo/TodoPage';
 
 @Entry
 @Component
@@ -43,16 +48,16 @@ struct NavigationExample {
     },
   ];
   @Provide('pageInfos') pageInfos: NavPathStack = new NavPathStack()
-  private arr: string[] = ['pageOneTmp', 'pageTwoTmp', 'DialogPage'];
+  @Provide('pageArr') private pageArr: string[] = ['pageOneTmp', 'pageTwoTmp', 'DialogPage'];
   @State private indexTooTmp: number = 0;
 
   @Builder
   PageMap(name: string) {
-    if (name === this.arr[0]) {
+    if (name === this.pageArr[0]) {
       pageOneTmp()
-    } else if (name === this.arr[1]) {
-      pageTwoTmp()
-    } else if (name === this.arr[2]) {
+    } else if (name === this.pageArr[1]) {
+      TodoPage()
+    } else if (name === this.pageArr[2]) {
       DialogPage()
     }
   }
@@ -60,53 +65,14 @@ struct NavigationExample {
   @Builder
   IndexPage() {
     if (this.indexTooTmp == 0) {
-      this.IndexNavigation()
+      TabNavigation()
     }
     if (this.indexTooTmp == 1) {
-      this.IndexMine()
+      TabMine()
     }
     if (this.indexTooTmp == 2) {
-      this.IndexSetting()
+      TabSetting()
     }
-  }
-
-  @Builder
-  IndexNavigation() {
-    TextInput({ placeholder: 'search...' })
-      .width("90%")
-      .height(40)
-      .backgroundColor($r('sys.color.comp_background_list_card'))
-
-    List({ space: 12 }) {
-      ForEach(this.arr, (item: string) => {
-        ListItem() {
-          Text(item)
-            .width("100%")
-            .height(72)
-            .backgroundColor($r('sys.color.comp_background_list_card'))
-            .borderRadius(24)
-            .fontSize(16)
-            .fontWeight(500)
-            .textAlign(TextAlign.Center)
-            .onClick(() => {
-              this.pageInfos.pushPath({ name: item })
-            })
-        }
-      }, (item: string): string => item)
-    }
-    .width("90%")
-    .height('100%')
-    .margin({ top: 12 })
-  }
-
-  @Builder
-  IndexMine() {
-    Text('A HarmonyOS developer')
-  }
-
-  @Builder
-  IndexSetting() {
-    Text('Setting')
   }
 
   build() {
@@ -125,72 +91,5 @@ struct NavigationExample {
     .height('100%')
     .width('100%')
     .backgroundColor('#F1F3F5')
-  }
-}
-
-// PageOne.ets
-@Component
-export struct pageOneTmp {
-  @Consume('pageInfos') pageInfos: NavPathStack;
-
-  build() {
-    NavDestination() {
-      Column() {
-        Text("NavDestinationContent1")
-      }.width('100%').height('100%')
-    }.title("NavDestinationTitle1")
-    .onBackPressed(() => {
-      const popDestinationInfo = this.pageInfos.pop() // 弹出路由栈栈顶元素
-      console.log('pop' + '返回值' + JSON.stringify(popDestinationInfo))
-      return true
-    })
-  }
-}
-
-// PageTwo.ets
-@Component
-export struct pageTwoTmp {
-  @Consume('pageInfos') pageInfos: NavPathStack;
-
-  build() {
-    NavDestination() {
-      Column() {
-        Text("NavDestinationContent2")
-      }.width('100%').height('100%')
-    }.title("NavDestinationTitle2")
-    .onBackPressed(() => {
-      const popDestinationInfo = this.pageInfos.pop() // 弹出路由栈栈顶元素
-      console.log('pop' + '返回值' + JSON.stringify(popDestinationInfo))
-      return true
-    })
-  }
-}
-
-
-@Component
-export struct DialogPage {
-  @Consume('pageInfos') pageStack: NavPathStack;
-
-  build() {
-    NavDestination() {
-      Stack({ alignContent: Alignment.Center }) {
-        Column() {
-          Text("Dialog NavDestination")
-            .fontSize(20)
-            .margin({ bottom: 100 })
-          Button("Close").onClick(() => {
-            this.pageStack.pop()
-          }).width('30%')
-        }
-        .justifyContent(FlexAlign.Center)
-        .backgroundColor(Color.White)
-        .borderRadius(10)
-        .height('30%')
-        .width('80%')
-      }.height("100%").width('100%')
-    }
-    .backgroundColor('rgba(0,0,0,0.5)')
-    .hideTitleBar(true)
-    .mode(NavDestinationMode.DIALOG)
   }
 }
