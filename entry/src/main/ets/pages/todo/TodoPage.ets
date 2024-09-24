@@ -1,45 +1,45 @@
+
 @Component
 export struct TodoPage {
-  // @Consume('pageInfos') pageInfos: NavPathStack;
-
-  @Builder componentBuilder() {
-    Text(`Parent builder `)
-  }
+  @State private pageArr: string[] = ['打酱油', '写语文作业'];
+  @Consume('pageInfos') pageInfos: NavPathStack;
 
   build() {
-    Column() {
-      Child({ customBuilderParam: this.componentBuilder })
-    }
+    NavDestination() {
+      List({ space: 10 }) {
+        ForEach(this.pageArr, (item: string) => {
+          ListItem() {
+            TodoItem({content:item})
+          }
+        }, (item: string): string => item)
+      }
+      .width("90%")
+      .height('100%')
+      .margin({ top: 12 })
+    }.title('TODO')
+    .onBackPressed(() => {
+      const popDestinationInfo = this.pageInfos.pop() // 弹出路由栈栈顶元素
+      console.log('pop' + '返回值' + JSON.stringify(popDestinationInfo))
+      return true
+    })
   }
-
-  // build() {
-    // NavDes({ title: 'Todo', builder: this.componentBuilder })
-  // }
 }
-//
-// @Component
-// export struct NavDes {
-//   @Prop title: string = ""
-//
-//   @Builder
-//   doNothingBuilder() {};
-//   @BuilderParam builder: () => void = this.doNothingBuilder;
-//
-//   build() {
-//     Column() {
-//       this.builder
-//     }
-//   }
-// }
+
 @Component
-struct Child {
-  @Builder customBuilder() {};
-  // 使用父组件@Builder装饰的方法初始化子组件@BuilderParam
-  @BuilderParam customBuilderParam: () => void = this.customBuilder;
+struct TodoItem{
+  @Prop content:string = ''
 
   build() {
-    Column() {
-      this.customBuilderParam()
-    }
+    Text(this.content)
+      .width("100%")
+      .height(32)
+      .backgroundColor($r('sys.color.comp_background_list_card'))
+      .borderRadius(24)
+      .fontSize(14)
+      .fontWeight(500)
+      .textAlign(TextAlign.Center)
+      .onClick(() => {
+        //detail
+      })
   }
 }
